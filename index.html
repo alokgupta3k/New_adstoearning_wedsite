@@ -1,106 +1,318 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>वेबसाइट से पैसे कमाने के तरीके</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            width: 80%;
-            margin: auto;
-            overflow: hidden;
-            padding: 20px;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding: 1rem 0;
-            text-align: center;
-        }
-        header h1 {
-            margin: 0;
-        }
-        .post {
-            background: #fff;
-            padding: 20px;
-            margin-top: 20px;
-            border-radius: 5px;
-        }
-        .post h2 {
-            color: #333;
-        }
-        .post img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-        .post p {
-            margin-bottom: 15px;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            margin-top: 20px;
-            background: #333;
-            color: #fff;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BucketList-style Travel Blog</title>
+  <meta name="description" content="A clean, story-focused travel blog layout with hero, categories, and article cards." />
+  <style>
+    /* ---------- Design Tokens ---------- */
+    :root{
+      --bg: #0e0f10;
+      --card: #16181a;
+      --muted: #88919a;
+      --text: #e9eef3;
+      --accent: #ffcc00;           /* yellow bar */
+      --brand: #f2a900;            /* logo dot */
+      --link: #5ec1ff;
+      --chip: #22262a;
+      --stroke: #2a2f34;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    /* ---------- Base ---------- */
+    *{box-sizing:border-box}
+    html,body{margin:0;background:#0b0c0e;color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    a{color:var(--link);text-decoration:none}
+    img{max-width:100%;height:auto;display:block}
+    .container{width:min(1100px, 92%);margin-inline:auto}
+    .shadow{box-shadow:var(--shadow)}
+    .card{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius)}
+    .pill{background:var(--chip);border:1px solid var(--stroke);padding:.45rem .7rem;border-radius:999px;font-size:.85rem;color:#cfd6dd}
+    .sr-only{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;clip-path:inset(50%)}
+
+    /* ---------- Top Subscribe Bar ---------- */
+    .subscribe-bar{
+      background:var(--accent);
+      color:#131313;
+      font-weight:600;
+      padding:.7rem 0;
+      text-align:center;
+    }
+    .subscribe-bar a{color:#131313;text-decoration:underline}
+
+    /* ---------- Header ---------- */
+    header{position:sticky;top:0;z-index:40;background:rgba(13,14,16,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--stroke)}
+    .nav{
+      display:flex;align-items:center;gap:14px;justify-content:space-between;padding:.8rem 0;
+    }
+    .brand{display:flex;align-items:center;gap:.6rem;font-weight:800;letter-spacing:.3px}
+    .brand .dot{width:12px;height:12px;border-radius:999px;background:var(--brand)}
+    .brand span{font-size:1.05rem}
+    .nav-actions,.nav-links{display:flex;align-items:center;gap:.6rem}
+    .nav-links a{color:#dfe6ed;padding:.5rem .8rem;border-radius:999px}
+    .nav-links a:hover{background:#1b1f23}
+    .burger{display:none}
+
+    .icon-btn{
+      display:inline-grid;place-items:center;width:38px;height:38px;border-radius:999px;
+      border:1px solid var(--stroke);background:var(--chip);color:#cfd6dd;
+    }
+    .search{display:flex;align-items:center;gap:.5rem;background:var(--chip);border:1px solid var(--stroke);border-radius:999px;padding:.5rem .8rem}
+    .search input{background:transparent;border:0;outline:0;color:#dfe6ed;min-width:140px}
+    .search svg{opacity:.7}
+
+    /* ---------- Hero ---------- */
+    .hero{
+      position:relative;isolation:isolate;border-bottom:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.7)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2400&auto=format&fit=crop') center/cover no-repeat;
+    }
+    .hero-inner{padding:clamp(3rem, 4vw + 2rem, 6rem) 0}
+    .hero h1{font-size:clamp(1.9rem, 1.3rem + 3vw, 3.2rem);margin:0 0 .6rem;line-height:1.15}
+    .hero p{color:#c9d2db;margin:.3rem 0 1.2rem}
+    .hero-cta{display:flex;gap:.6rem;flex-wrap:wrap}
+    .btn{
+      background:#ffd166;color:#1b1b1b;border:0;padding:.75rem 1rem;border-radius:12px;font-weight:700;cursor:pointer
+    }
+    .btn.ghost{background:transparent;color:#e7edf3;border:1px solid var(--stroke)}
+    .meta{display:flex;align-items:center;gap:.8rem;color:#cbd3db;font-size:.95rem;margin-top:1rem}
+    .meta img{width:38px;height:38px;border-radius:999px}
+
+    /* ---------- Section: Categories Row ---------- */
+    .cats{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.2rem 0 0}
+    .cats .pill{cursor:pointer}
+
+    /* ---------- Section: Articles Grid ---------- */
+    .grid{
+      display:grid;gap:22px;margin:28px 0 60px;
+      grid-template-columns:repeat(12,1fr);
+    }
+    .span-7{grid-column:span 7}
+    .span-5{grid-column:span 5}
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr}
+      .span-7,.span-5{grid-column:1/-1}
+      .nav-links{display:none}
+      .burger{display:inline-grid}
+      .search input{min-width:80px}
+    }
+
+    /* ---------- Feature Card ---------- */
+    .feature{overflow:hidden;display:grid;grid-template-rows:auto 1fr}
+    .feature .media{aspect-ratio:16/9;position:relative;background:#000;border-bottom:1px solid var(--stroke)}
+    .feature .media img{width:100%;height:100%;object-fit:cover;opacity:.92}
+    .feature .badge{
+      position:absolute;left:14px;top:14px;background:rgba(255,204,0,.95);
+      color:#151515;font-weight:800;padding:.35rem .6rem;border-radius:999px;font-size:.8rem
+    }
+    .feature .content{padding:1.1rem 1rem 1.2rem}
+    .kicker{letter-spacing:.12em;text-transform:uppercase;color:#aab4be;font-size:.78rem}
+    .title{font-size:1.35rem;line-height:1.25;margin:.35rem 0 .4rem}
+    .desc{color:#cbd6df}
+
+    /* ---------- Numbered List Card (e.g., #7 Notes From The Road) ---------- */
+    .list-card{display:grid;grid-template-columns:140px 1fr;gap:14px;padding:14px}
+    .list-card .n{font-weight:800;font-size:1.8rem;background:#1b1f23;border:1px solid var(--stroke);border-radius:12px;display:grid;place-items:center}
+    .list-card .thumb{border-radius:12px;overflow:hidden}
+    .list-card .thumb img{height:100%;width:100%;object-fit:cover;display:block}
+    .list-card .text .h{font-weight:800}
+    @media (max-width:600px){ .list-card{grid-template-columns:1fr} .list-card .n{order:-1} }
+
+    /* ---------- Footer ---------- */
+    footer{border-top:1px solid var(--stroke);padding:40px 0;color:#b7c0c9}
+    .foot{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+    .foot small{opacity:.8}
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>ब्लॉग: वेबसाइट से पैसे कैसे कमाएं?</h1>
-    </header>
+  <!-- Subscribe strip -->
+  <div class="subscribe-bar">
+    NEW TRAVEL GUIDES IN YOUR INBOX. <a href="#">SUBSCRIBE</a> →
+  </div>
 
-    <div class="container">
-        <div class="post">
-            <h2>ऑनलाइन कमाई का ज़रिया: अपनी वेबसाइट से पैसे कमाने के आसान तरीके</h2>
-            <p>आज के डिजिटल युग में, एक वेबसाइट सिर्फ जानकारी साझा करने का माध्यम नहीं, बल्कि कमाई का एक बेहतरीन जरिया भी बन सकती है। अगर आपके पास एक वेबसाइट है या आप बनाने की सोच रहे हैं, तो यह जानना ज़रूरी है कि आप इससे पैसे कैसे कमा सकते हैं।</p>
-            
-            <img src="https://images.pexels.com/photos/4126724/pexels-photo-4126724.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="एक व्यक्ति लैपटॉप पर काम कर रहा है">
+  <!-- Header -->
+  <header>
+    <div class="container nav">
+      <button class="icon-btn burger" id="openMenu" aria-label="Open menu">
+        <!-- menu icon -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/></svg>
+      </button>
 
-            <h3>1. विज्ञापन दिखाकर (Displaying Advertisements)</h3>
-            <p>यह वेबसाइट से पैसे कमाने का सबसे आम और लोकप्रिय तरीका है। इसमें आप अपनी वेबसाइट पर विज्ञापन के लिए जगह देते हैं। जब कोई विज़िटर इन विज्ञापनों को देखता है या उन पर क्लिक करता है, तो आपको पैसे मिलते हैं।</p>
-            <p><strong>गूगल एडसेंस (Google AdSense)</strong> इसका सबसे बड़ा उदाहरण है। यह इस्तेमाल करने में बहुत आसान है और शुरुआती लोगों के लिए एक बेहतरीन विकल्प है।</p>
-            <img src="https://images.pexels.com/photos/5082579/pexels-photo-5082579.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="वेबसाइट पर विज्ञापन का उदाहरण">
+      <a class="brand" href="#">
+        <i class="dot" aria-hidden="true"></i>
+        <span>BucketListly Blog</span>
+      </a>
 
-            <h3>2. एफिलिएट मार्केटिंग (Affiliate Marketing)</h3>
-            <p>एफिलिएट मार्केटिंग का मतलब है किसी दूसरी कंपनी के उत्पादों (Products) या सेवाओं (Services) को अपनी वेबसाइट पर प्रमोट करना। जब कोई विज़िटर आपके दिए गए लिंक से उस प्रोडक्ट को खरीदता है, तो आपको एक निश्चित कमीशन मिलता है।</p>
-            <p>यह तरीका उन वेबसाइटों के लिए बहुत अच्छा है जो किसी खास विषय पर आधारित हैं, जैसे टेक्नोलॉजी रिव्यू, फैशन ब्लॉग, या कुकिंग वेबसाइट।</p>
-            <img src="https://images.pexels.com/photos/7567543/pexels-photo-7567543.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="एफिलिएट मार्केटिंग से संबंधित शॉपिंग कार्ट">
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#">Planning ▾</a>
+        <a href="#">Destinations ▾</a>
+        <a href="#">About</a>
+        <a href="#">Video</a>
+      </nav>
 
-            <h3>3. अपने खुद के उत्पाद या सेवाएं बेचना</h3>
-            <p>अगर आपके पास कोई हुनर या प्रोडक्ट है, तो आप अपनी वेबसाइट को एक ऑनलाइन दुकान (E-commerce store) में बदल सकते हैं। यह कमाई का एक बहुत ही शक्तिशाली तरीका है क्योंकि इसमें सारा मुनाफा आपका होता है।</p>
-            <ul>
-                <li><strong>डिजिटल उत्पाद:</strong> ई-बुक्स, ऑनलाइन कोर्स, सॉफ्टवेयर, फोटो।</li>
-                <li><strong>भौतिक उत्पाद:</strong> हाथ से बनी चीजें, कपड़े, किताबें।</li>
-                <li><strong>सेवाएं:</strong> ऑनलाइन कंसल्टेशन, वेब डिजाइनिंग, कंटेंट राइटिंग।</li>
-            </ul>
-            <img src="https://images.pexels.com/photos/3944405/pexels-photo-3944405.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="ऑनलाइन उत्पाद बेचना">
+      <div class="nav-actions">
+        <form class="search" role="search" aria-label="Site search" onsubmit="return false;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.71.71l.27.28v.79L20 21.5 21.5 20 15.5 14zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z"/></svg>
+          <input placeholder="Search the blog…" aria-label="Search input"/>
+        </form>
 
-            <h3>4. स्पॉन्सर्ड पोस्ट और रिव्यू (Sponsored Posts and Reviews)</h3>
-            <p>जब आपकी वेबसाइट लोकप्रिय हो जाती है और उस पर अच्छे खासे विज़िटर्स आने लगते हैं, तो कई कंपनियां और ब्रांड्स आपको अपने प्रोडक्ट के बारे में लिखने के लिए पैसे देते हैं। आप उनके प्रोडक्ट का रिव्यू कर सकते हैं या उनके बारे में एक जानकारीपूर्ण पोस्ट लिख सकते हैं।</p>
-            <p><strong>ध्यान दें:</strong> हमेशा अपने पाठकों के प्रति ईमानदार रहें और केवल उन्हीं उत्पादों को प्रमोट करें जिन पर आप वास्तव में विश्वास करते हैं।</p>
-            <img src="https://images.pexels.com/photos/7688460/pexels-photo-7688460.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="उत्पाद की समीक्षा लिखना">
+        <button class="icon-btn" id="shareBtn" title="Share">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18 8a3 3 0 10-2.83-2H9a3 3 0 000 6h6.17A3 3 0 1018 8zM7 9a1 1 0 110-2 1 1 0 010 2zm10-3a1 1 0 110 2 1 1 0 010-2zm0 10a3 3 0 10-2.83 2H9a3 3 0 100-6h5.17A3 3 0 1017 16zM7 17a1 1 0 110-2 1 1 0 010 2zm10 0a1 1 0 110-2 1 1 0 010 2z"/>
+          </svg>
+        </button>
 
-            <h4>निष्कर्ष</h4>
-            <p>वेबसाइट से पैसे कमाने के लिए सही तरीके का चुनाव आपकी वेबसाइट के टॉपिक, विज़िटर्स की संख्या और आपके धैर्य पर निर्भर करता है। आप इनमें से किसी एक तरीके से शुरुआत कर सकते हैं या एक से ज़्यादा तरीकों को एक साथ भी अपना सकते हैं। मेहनत और निरंतरता से आप अपनी वेबसाइट को कमाई का एक अच्छा स्रोत बना सकते हैं।</p>
-        </div>
+        <button class="icon-btn" title="Save">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h12V8h-4V4H6z"/></svg>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <footer>
-        <p>&copy; 2025 आपका ब्लॉग | सर्वाधिकार सुरक्षित</p>
-    </footer>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <span class="kicker">Inspiration</span>
+      <h1>24 Gorgeous Travel Blogs You’ll Love in 2025</h1>
+      <p>Taking storytelling to the next level — a curated list of beautiful, well-designed travel blogs.</p>
+      <div class="hero-cta">
+        <button class="btn" id="readBtn">Read My Blog</button>
+        <button class="btn ghost">Watch My Video</button>
+      </div>
 
+      <div class="meta">
+        <img alt="" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=240&auto=format&fit=crop" />
+        <div>
+          <strong>Pete R.</strong> · Solo traveler & photographer<br/>
+          <small>Updated on <time datetime="2025-07-21">Jul 21, 2025</time></small>
+        </div>
+      </div>
+
+      <div class="cats">
+        <span class="pill">Planning</span>
+        <span class="pill">Destinations</span>
+        <span class="pill">Backpacking</span>
+        <span class="pill">Gear</span>
+        <span class="pill">Photography</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Content -->
+  <main class="container">
+    <section class="grid">
+      <!-- Left: Feature article -->
+      <article class="span-7 card feature shadow" aria-labelledby="featTitle">
+        <div class="media">
+          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2200&auto=format&fit=crop" alt="Laptop on a beach at sunset" />
+          <span class="badge">Editor’s Pick</span>
+        </div>
+        <div class="content">
+          <span class="kicker">Deep Dive</span>
+          <h2 id="featTitle" class="title">What Makes a Travel Blog Truly Beautiful?</h2>
+          <p class="desc">From typography and color to narrative voice, we break down the elements that turn a simple travel diary into an unforgettable reading experience.</p>
+        </div>
+      </article>
+
+      <!-- Right: list item #7 like the screenshot -->
+      <div class="span-5 card shadow">
+        <div class="list-card">
+          <div class="n">7</div>
+          <div class="thumb">
+            <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1600&auto=format&fit=crop" alt="Blue mountains at sunset" />
+          </div>
+          <div class="text">
+            <div class="h">Notes From The Road</div>
+            <p class="desc" style="margin:.35rem 0 0">
+              One of my new favorite discoveries is <a href="#">Notes from the Road</a>, a travel blog by Erik Gauger who explores the world by road, kayak, and on foot—bringing personal, powerful, and funny stories.
+            </p>
+          </div>
+        </div>
+        <div style="padding:0 14px 14px">
+          <a class="pill" href="#" aria-label="Explore Notes From The Road">Explore</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Another row of small cards (optional showcase) -->
+    <section class="grid">
+      <article class="span-5 card">
+        <img src="https://images.unsplash.com/photo-1500534314210-8b1b0b2a0d9b?q=80&w=1600&auto=format&fit=crop" alt="">
+        <div style="padding:14px 16px">
+          <span class="kicker">Story</span>
+          <h3 class="title" style="font-size:1.1rem">Firelight in the Dark Divide</h3>
+          <p class="desc">A backpacking trip to the solitary wilderness in southwestern Washington that rekindled my love of campfires.</p>
+        </div>
+      </article>
+
+      <article class="span-7 card">
+        <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=2000&auto=format&fit=crop" alt="">
+        <div style="padding:14px 16px">
+          <span class="kicker">Guide</span>
+          <h3 class="title" style="font-size:1.1rem">How To Plan a 3-Month Backpacking Route</h3>
+          <p class="desc">Budgeting, visas, gear, and a flexible route template you can duplicate.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container foot">
+      <div class="brand"><i class="dot"></i><span>BucketListly Blog</span></div>
+      <small>© 2025 • Built with love for travelers.</small>
+      <div class="nav-actions" aria-label="Social">
+        <a class="icon-btn" href="#" aria-label="Instagram">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6-.5a1.5 1.5 0 10.001 3.001A1.5 1.5 0 0018 6.5zM12 9a3 3 0 110 6 3 3 0 010-6z"/></svg>
+        </a>
+        <a class="icon-btn" href="#" aria-label="Pinterest">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-3.53 19.38c-.05-.82-.1-2.08.02-2.98.11-.79.74-5.05.74-5.05s-.19-.38-.19-.94c0-.88.51-1.53 1.14-1.53.54 0 .8.41.8.91 0 .55-.35 1.38-.53 2.15-.15.64.33 1.17.97 1.17 1.16 0 2.05-1.22 2.05-2.97 0-1.55-1.12-2.64-2.71-2.64-1.85 0-2.94 1.39-2.94 2.83 0 .56.22 1.16.49 1.49a.2.2 0 01.05.19c-.05.21-.16.67-.18.76-.03.12-.1.15-.23.09-.86-.4-1.39-1.65-1.39-2.65 0-2.16 1.57-4.15 4.53-4.15 2.38 0 4.22 1.7 4.22 3.97 0 2.36-1.49 4.27-3.56 4.27-.7 0-1.35-.36-1.57-.78 0 0-.34 1.35-.42 1.68-.16.62-.6 1.4-.9 1.88A10 10 0 1012 2z"/></svg>
+        </a>
+        <a class="icon-btn" href="#" aria-label="YouTube">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <dialog id="menuDlg" style="border:0;border-radius:16px;padding:0;max-width:380px;width:92%">
+    <div class="card" style="padding:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <strong>Menu</strong>
+        <button class="icon-btn" id="closeMenu" aria-label="Close menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>
+        </button>
+      </div>
+      <div style="display:grid;gap:.5rem">
+        <a class="pill" href="#">Planning</a>
+        <a class="pill" href="#">Destinations</a>
+        <a class="pill" href="#">About</a>
+        <a class="pill" href="#">Video</a>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    // Mobile menu
+    const menu = document.getElementById('menuDlg');
+    document.getElementById('openMenu').addEventListener('click',()=>menu.showModal());
+    document.getElementById('closeMenu').addEventListener('click',()=>menu.close());
+
+    // Share button
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      try{
+        if(navigator.share){
+          await navigator.share({title:document.title, text:'Check out this travel blog layout!', url:location.href});
+        }else{
+          await navigator.clipboard.writeText(location.href);
+          alert('Link copied!');
+        }
+      }catch(e){}
+    });
+
+    // Demo CTA
+    document.getElementById('readBtn').addEventListener('click',()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}));
+  </script>
 </body>
-</html>
+          </html>
