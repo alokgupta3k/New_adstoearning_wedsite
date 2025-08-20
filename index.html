@@ -1,136 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BucketList-style Travel Blog</title>
-  <meta name="description" content="A clean, story-focused travel blog layout with hero, categories, and article cards." />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced 3D Website with Chat</title>
   <style>
-    /* ---------- Design Tokens ---------- */
-    :root{
-      --bg: #0e0f10;
-      --card: #16181a;
-      --muted: #88919a;
-      --text: #e9eef3;
-      --accent: #ffcc00;           /* yellow bar */
-      --brand: #f2a900;            /* logo dot */
-      --link: #5ec1ff;
-      --chip: #22262a;
-      --stroke: #2a2f34;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 18px;
+    body,html {
+      margin:0;
+      padding:0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background:#000;
+      overflow-x: hidden;
     }
-    /* ---------- Base ---------- */
-    *{box-sizing:border-box}
-    html,body{margin:0;background:#0b0c0e;color:var(--text);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
-    a{color:var(--link);text-decoration:none}
-    img{max-width:100%;height:auto;display:block}
-    .container{width:min(1100px, 92%);margin-inline:auto}
-    .shadow{box-shadow:var(--shadow)}
-    .card{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius)}
-    .pill{background:var(--chip);border:1px solid var(--stroke);padding:.45rem .7rem;border-radius:999px;font-size:.85rem;color:#cfd6dd}
-    .sr-only{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;clip-path:inset(50%)}
-
-    /* ---------- Top Subscribe Bar ---------- */
-    .subscribe-bar{
-      background:var(--accent);
-      color:#131313;
-      font-weight:600;
-      padding:.7rem 0;
-      text-align:center;
+    canvas {
+      position: fixed;
+      top:0; left:0;
+      width:100%;
+      height:100%;
+      z-index: -1;
     }
-    .subscribe-bar a{color:#131313;text-decoration:underline}
-
-    /* ---------- Header ---------- */
-    header{position:sticky;top:0;z-index:40;background:rgba(13,14,16,.7);backdrop-filter:blur(8px);border-bottom:1px solid var(--stroke)}
-    .nav{
-      display:flex;align-items:center;gap:14px;justify-content:space-between;padding:.8rem 0;
+    .popup {
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color:#fff;
+      z-index: 1000;
     }
-    .brand{display:flex;align-items:center;gap:.6rem;font-weight:800;letter-spacing:.3px}
-    .brand .dot{width:12px;height:12px;border-radius:999px;background:var(--brand)}
-    .brand span{font-size:1.05rem}
-    .nav-actions,.nav-links{display:flex;align-items:center;gap:.6rem}
-    .nav-links a{color:#dfe6ed;padding:.5rem .8rem;border-radius:999px}
-    .nav-links a:hover{background:#1b1f23}
-    .burger{display:none}
-
-    .icon-btn{
-      display:inline-grid;place-items:center;width:38px;height:38px;border-radius:999px;
-      border:1px solid var(--stroke);background:var(--chip);color:#cfd6dd;
+    .popup-content {
+      background: #111;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 0 20px cyan;
+      max-width:90%;
     }
-    .search{display:flex;align-items:center;gap:.5rem;background:var(--chip);border:1px solid var(--stroke);border-radius:999px;padding:.5rem .8rem}
-    .search input{background:transparent;border:0;outline:0;color:#dfe6ed;min-width:140px}
-    .search svg{opacity:.7}
-
-    /* ---------- Hero ---------- */
-    .hero{
-      position:relative;isolation:isolate;border-bottom:1px solid var(--stroke);
-      background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.7)), url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=2400&auto=format&fit=crop') center/cover no-repeat;
+    .popup input {
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      width: 80%;
     }
-    .hero-inner{padding:clamp(3rem, 4vw + 2rem, 6rem) 0}
-    .hero h1{font-size:clamp(1.9rem, 1.3rem + 3vw, 3.2rem);margin:0 0 .6rem;line-height:1.15}
-    .hero p{color:#c9d2db;margin:.3rem 0 1.2rem}
-    .hero-cta{display:flex;gap:.6rem;flex-wrap:wrap}
-    .btn{
-      background:#ffd166;color:#1b1b1b;border:0;padding:.75rem 1rem;border-radius:12px;font-weight:700;cursor:pointer
+    .popup button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border:none;
+      border-radius: 8px;
+      cursor:pointer;
+      background: cyan;
+      color:#000;
+      font-weight: bold;
     }
-    .btn.ghost{background:transparent;color:#e7edf3;border:1px solid var(--stroke)}
-    .meta{display:flex;align-items:center;gap:.8rem;color:#cbd3db;font-size:.95rem;margin-top:1rem}
-    .meta img{width:38px;height:38px;border-radius:999px}
-
-    /* ---------- Section: Categories Row ---------- */
-    .cats{display:flex;flex-wrap:wrap;gap:.6rem;margin:1.2rem 0 0}
-    .cats .pill{cursor:pointer}
-
-    /* ---------- Section: Articles Grid ---------- */
-    .grid{
-      display:grid;gap:22px;margin:28px 0 60px;
-      grid-template-columns:repeat(12,1fr);
+    .content {
+      position: relative;
+      z-index: 1;
+      background: rgba(255,255,255,0.9);
+      padding: 40px 20px;
+      color:#000;
+      max-width: 1200px;
+      margin: auto;
     }
-    .span-7{grid-column:span 7}
-    .span-5{grid-column:span 5}
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-      .span-7,.span-5{grid-column:1/-1}
-      .nav-links{display:none}
-      .burger{display:inline-grid}
-      .search input{min-width:80px}
+    .content h1, .content h2 {
+      color:#111;
     }
-	  <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-    /* ---------- Feature Card ---------- */
-    .feature{overflow:hidden;display:grid;grid-template-rows:auto 1fr}
-    .feature .media{aspect-ratio:16/9;position:relative;background:#000;border-bottom:1px solid var(--stroke)}
-    .feature .media img{width:100%;height:100%;object-fit:cover;opacity:.92}
-    .feature .badge{
-      position:absolute;left:14px;top:14px;background:rgba(255,204,0,.95);
-      color:#151515;font-weight:800;padding:.35rem .6rem;border-radius:999px;font-size:.8rem
+    .content p, .content li {
+      line-height:1.7;
+      text-align: justify;
     }
-    .feature .content{padding:1.1rem 1rem 1.2rem}
-    .kicker{letter-spacing:.12em;text-transform:uppercase;color:#aab4be;font-size:.78rem}
-    .title{font-size:1.35rem;line-height:1.25;margin:.35rem 0 .4rem}
-    .desc{color:#cbd6df}
-
-    /* ---------- Numbered List Card (e.g., #7 Notes From The Road) ---------- */
-    .list-card{display:grid;grid-template-columns:140px 1fr;gap:14px;padding:14px}
-    .list-card .n{font-weight:800;font-size:1.8rem;background:#1b1f23;border:1px solid var(--stroke);border-radius:12px;display:grid;place-items:center}
-    .list-card .thumb{border-radius:12px;overflow:hidden}
-    .list-card .thumb img{height:100%;width:100%;object-fit:cover;display:block}
-    .list-card .text .h{font-weight:800}
-    @media (max-width:600px){ .list-card{grid-template-columns:1fr} .list-card .n{order:-1} }
-
-    /* ---------- Footer ---------- */
-    footer{border-top:1px solid var(--stroke);padding:40px 0;color:#b7c0c9}
-    .foot{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
-    .foot small{opacity:.8}
+    /* Ads Placeholder */
+    .ads-space {
+      width: 100%;
+      height: 120px;
+      background: #f8f8f8;
+      color: #666;
+      text-align: center;
+      line-height: 120px;
+      margin: 30px 0;
+      border: 2px dashed #aaa;
+      font-size:18px;
+    }
+    /* Chat Section */
+    .chat-section {
+      background: #111;
+      color: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      margin-top: 40px;
+      box-shadow: 0 0 15px rgba(0,255,255,0.5);
+    }
+    .chat-messages {
+      max-height:200px;
+      overflow-y:auto;
+      background:#222;
+      padding:10px;
+      border-radius:10px;
+      margin-bottom:15px;
+    }
+    .chat-input {
+      display:flex;
+    }
+    .chat-input input {
+      flex:1;
+      padding:10px;
+      border:none;
+      border-radius: 8px 0 0 8px;
+      outline:none;
+    }
+    .chat-input button {
+      padding:10px 20px;
+      border:none;
+      border-radius:0 8px 8px 0;
+      background: cyan;
+      color:#000;
+      cursor:pointer;
+      font-weight:bold;
+    }
+    @media(max-width:768px){
+      .content{padding:20px 10px;}
+      .popup-content{padding:20px;}
+      .ads-space{height:100px; line-height:100px; font-size:14px;}
+    }
   </style>
 </head>
 <body>
-	<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+  <!-- 3D Background -->
+  <canvas id="bg"></canvas>
 
-  <script type="text/javascript">
+  <!-- Popup -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h2>Welcome</h2>
+      <p>Please enter your name to continue:</p>
+      <input type="text" id="username" placeholder="Your Name"/>
+      <br>
+      <button onclick="saveName()">Enter</button>
+    </div>
+  </div>
+ 
+<!-- Romantic Anime Girl (Fully Clothed) Animation (Bottom Side) -->
+<div style="text-align:center; margin:50px 0;">
+  <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_w51pcehl.json"  
+                 background="transparent"  
+                 speed="1"  
+                 style="width:420px; height:200px;"  
+                 loop autoplay>
+  </lottie-player>
+</div>
+
+<!-- Lottie Script -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+  <!-- Main Content -->
+  <div class="content">
+  	<!-- ================= ARTICLE SECTION ================= -->
+<section id="article" style="padding:60px 20px; position:relative; z-index:2;">
+
+  <!-- 3D Background Animation -->
+  <div id="bg-animation"></div>
+
+  <div style="max-width:1000px; margin:auto; background:rgba(255,255,255,0.92); padding:30px; border-radius:20px; box-shadow:0px 10px 25px rgba(0,0,0,0.2);">
+    <h1 style="text-align:center; font-size:40px; margin-bottom:20px; color:#222; font-family: 'Poppins', sans-serif;">
+      How to Earn Money from a Website
+    </h1>
+
+    <p style="line-height:1.8; font-size:18px; color:#333; text-align:justify;">
+      In today’s digital age, creating a website is one of the best ways to build your online presence and earn money. 
+      Websites can generate income through ads, affiliate marketing, product sales, and much more. 
+      But the real secret lies in **design, content, and user experience**.  
+    </p>
+
+    <h2 style="margin-top:30px; color:#111;">1. Advertising (Google AdSense & Others)</h2>
+    <p style="line-height:1.8; font-size:18px; color:#444;">
+      The most popular way to earn money is by displaying advertisements. Google AdSense allows website owners 
+      to show relevant ads to their visitors. You get paid every time a visitor views or clicks an ad. 
+    </p>
+
+    <!-- ADS SPACE -->
+    <div style="margin:20px 0; padding:20px; background:#f5f5f5; border:2px dashed #aaa; text-align:center; border-radius:10px;">
+      [AD SPACE HERE]
+    </div>
+	  <script type="text/javascript">
 	atOptions = {
 		'key' : '02d681c36d68f365c1e232f4b1ead45c',
 		'format' : 'iframe',
@@ -140,215 +194,327 @@
 	};
 </script>
 <script type="text/javascript" src="//www.highperformanceformat.com/02d681c36d68f365c1e232f4b1ead45c/invoke.js"></script>
+    <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
 
-  <!-- Subscribe strip -->
-  <div class="subscribe-bar">
-    NEW TRAVEL GUIDES IN YOUR INBOX. <a href="#">SUBSCRIBE</a> →
+    <h2 style="margin-top:30px; color:#111;">2. Affiliate Marketing</h2>
+    <p style="line-height:1.8; font-size:18px; color:#444;">
+      Affiliate marketing allows you to promote products or services on your website. When someone purchases through your referral link, you earn a commission. 
+      This works especially well with blogs, product reviews, and niche websites. 
+    </p>
+
+    <!-- ADS SPACE -->
+    <div style="margin:20px 0; padding:20px; background:#f5f5f5; border:2px dashed #aaa; text-align:center; border-radius:10px;">
+      [AD SPACE HERE]
+    </div>
+    <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+
+    <h2 style="margin-top:30px; color:#111;">3. Selling Digital Products</h2>
+    <p style="line-height:1.8; font-size:18px; color:#444;">
+      Digital products like eBooks, courses, templates, and software have become extremely popular. 
+      They require effort only once to create and can be sold multiple times, making them a great source of passive income. 
+    </p>
+
+    <h2 style="margin-top:30px; color:#111;">4. Sponsored Content</h2>
+    <p style="line-height:1.8; font-size:18px; color:#444;">
+      If your website gains popularity, brands may approach you to publish sponsored posts. 
+      This is a direct way to earn money without relying on ad clicks. 
+    </p>
+
+    <!-- ADS SPACE -->
+    <div style="margin:20px 0; padding:20px; background:#f5f5f5; border:2px dashed #aaa; text-align:center; border-radius:10px;">
+      [AD SPACE HERE]
+    </div><script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+
+    <h2 style="margin-top:30px; color:#111;">5. Memberships & Subscriptions</h2>
+    <p style="line-height:1.8; font-size:18px; color:#444;">
+      Websites can also charge for exclusive content, premium tools, or community access. 
+      Platforms like Patreon and custom membership systems make this easy. 
+    </p>
+
+    <p style="margin-top:30px; font-size:20px; text-align:center; color:#111; font-weight:bold;">
+       The key is: High-quality content + SEO + User-friendly design = More traffic & more income!
+    </p>
+  </div>
+</section>
+<header>
+        <h1>Comprehensive Guide to [Your Topic]</h1>
+        <p>Published on August 20, 2025</p>
+    </header>
+	  <script type='text/javascript' src='//pl27455300.profitableratecpm.com/1b/f0/fd/1bf0fd89ebbaf19fe4bff2d9875f36c5.js'></script>
+
+    <!-- Introduction -->
+    <section class="section">
+        <h2>Introduction</h2>
+        <p>This comprehensive guide explores [your topic] in depth, offering insights, practical tips, and expert advice to help you navigate this complex subject. Whether you're a beginner or an expert, this article provides valuable information to enhance your understanding and skills. The following sections cover key concepts, strategies, and trends, with actionable takeaways to apply in your context.</p>
+        <p>[Your topic] is a critical area in today’s world due to its impact on [relevant field/industry]. This article aims to break down complex ideas into digestible information, supported by research and real-world examples. Expect to learn about [key points], with practical applications for [target audience].</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. [Continue with relevant content related to your topic.]</p>
+        <p>The goal is to provide a thorough yet accessible resource that empowers you to take action. Let’s dive into the first section.</p>
+        <!-- Approx 500 words in this section when expanded -->
+    </section>
+
+    <!-- Ad Placeholder 1 -->
+    <div class="ad-placeholder">Advertisement 1: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 1 -->
+    <section class="section">
+        <h2>Section 1: Understanding the Basics</h2>
+        <p>This section introduces the foundational concepts of [your topic]. [Expand with detailed explanations, examples, and insights. Aim for 2,000-3,000 words per major section to reach the 30,000-word goal.]</p>
+    </section>
+
+    <!-- Ad Placeholder 2 -->
+    <div class="ad-placeholder">Advertisement 2: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 2 -->
+    <section class="section">
+        <h2>Section 2: Key Strategies and Techniques</h2>
+        <p>Explore practical strategies for [your topic]. [Include step-by-step guides, case studies, or data-driven insights.]</p>
+    </section>
+
+    <!-- Ad Placeholder 3 -->
+    <div class="ad-placeholder">Advertisement 3: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 3 -->
+    <section class="section">
+        <h2>Section 3: Advanced Concepts</h2>
+        <p>Dive deeper into advanced aspects of [your topic]. [Provide in-depth analysis, expert opinions, or technical details.]</p>
+    </section>
+
+    <!-- Ad Placeholder 4 -->
+    <div class="ad-placeholder">Advertisement 4: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 4 -->
+    <section class="section">
+        <h2>Section 4: Practical Applications</h2>
+        <p>Learn how to apply [your topic] in real-world scenarios. [Include examples, templates, or tools.]</p>
+    </section>
+
+    <!-- Ad Placeholder 5 -->
+    <div class="ad-placeholder">Advertisement 5: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 5 -->
+    <section class="section">
+        <h2>Section 5: Trends and Future Outlook</h2>
+        <p>Discuss emerging trends and the future of [your topic]. [Use recent data or expert predictions.]</p>
+    </section>
+
+    <!-- Ad Placeholder 6 -->
+    <div class="ad-placeholder">Advertisement 6: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 6 -->
+    <section class="section">
+        <h2>Section 6: Challenges and Solutions</h2>
+        <p>Address common challenges in [your topic] and how to overcome them. [Provide problem-solving tips.]</p>
+    </section>
+
+    <!-- Ad Placeholder 7 -->
+    <div class="ad-placeholder">Advertisement 7: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 7 -->
+    <section class="section">
+        <h2>Section 7: Case Studies</h2>
+        <p>Examine real-world case studies related to [your topic]. [Include detailed examples and outcomes.]</p>
+    </section>
+
+    <!-- Ad Placeholder 8 -->
+    <div class="ad-placeholder">Advertisement 8: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 8 -->
+    <section class="section">
+        <h2>Section 8: Tools and Resources</h2>
+        <p>Discover the best tools and resources for [your topic]. [List and describe relevant tools.]</p>
+    </section>
+
+    <!-- Ad Placeholder 9 -->
+    <div class="ad-placeholder">Advertisement 9: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 9 -->
+    <section class="section">
+        <h2>Section 9: Expert Tips</h2>
+        <p>Gain insights from experts in [your topic]. [Include quotes or advice from industry leaders.]</p>
+    </section>
+
+    <!-- Ad Placeholder 10 -->
+    <div class="ad-placeholder">Advertisement 10: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 10 -->
+    <section class="section">
+        <h2>Section 10: FAQs</h2>
+        <p>Answer frequently asked questions about [your topic]. [Provide clear, concise answers.]</p>
+    </section>
+
+    <!-- Ad Placeholder 11 -->
+    <div class="ad-placeholder">Advertisement 11: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 11 -->
+    <section class="section">
+        <h2>Section 11: Getting Started</h2>
+        <p>A beginner’s guide to getting started with [your topic]. [Include actionable steps.]</p>
+    </section>
+
+    <!-- Ad Placeholder 12 -->
+    <div class="ad-placeholder">Advertisement 12: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 12 -->
+    <section class="section">
+        <h2>Section 12: Measuring Success</h2>
+        <p>Learn how to measure success in [your topic]. [Discuss metrics and evaluation methods.]</p>
+    </section>
+
+    <!-- Ad Placeholder 13 -->
+    <div class="ad-placeholder">Advertisement 13: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Section 13 -->
+    <section class="section">
+        <h2>Section 13: Common Mistakes to Avoid</h2>
+        <p>Highlight common pitfalls in [your topic] and how to avoid them. [Provide examples.]</p>
+    </section>
+
+    <!-- Ad Placeholder 14 -->
+    <div class="ad-placeholder">Advertisement 14: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <!-- Conclusion -->
+    <section class="section">
+        <h2>Conclusion</h2>
+        <p>Summarize key takeaways and encourage readers to apply what they’ve learned. [Wrap up with a call to action.]</p>
+    </section>
+
+    <!-- Ad Placeholder 15 -->
+    <div class="ad-placeholder">Advertisement 15: Insert Ad Code Here</div>
+<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
+<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
+    <footer>
+        <p>&copy; 2025 Your Website. All rights reserved.</p>
+    </footer>
+<!-- Lottie Script -->
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<!-- ================= BACKGROUND 3D ANIMATION ================= -->
+<style>
+#bg-animation {
+  position:absolute;
+  top:0; left:0;
+  width:100%; height:100%;
+  z-index:-1;
+  background: linear-gradient(135deg, #89f7fe, #66a6ff);
+  overflow:hidden;
+}
+
+#bg-animation::before, #bg-animation::after {
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  animation: float 10s infinite ease-in-out;
+  opacity:0.4;
+}
+
+#bg-animation::before {
+  width:300px; height:300px;
+  background:#ff6ec7;
+  top:10%; left:20%;
+}
+
+#bg-animation::after {
+  width:400px; height:400px;
+  background:#6effa1;
+  bottom:15%; right:25%;
+}
+
+@keyframes float {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-50px) scale(1.2); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Mobile Friendly */
+@media (max-width:768px){
+  #article h1 { font-size:28px; }
+  #article p { font-size:16px; }
+}
+</style>
+    
+    <!-- Chat Section at Bottom -->
+    <div class="chat-section">
+      <h2> Live Chat</h2>
+      <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
   </div>
 
-	<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-  <!-- Header -->
-  <header>
-    <div class="container nav">
-      <button class="icon-btn burger" id="openMenu" aria-label="Open menu">
-        <!-- menu icon -->
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/></svg>
-      </button>
-
-      <a class="brand" href="#">
-        <i class="dot" aria-hidden="true"></i>
-        <span>BucketListly Blog</span>
-      </a>
-
-      <nav class="nav-links" aria-label="Primary">
-        <a href="#">Planning ▾</a>
-        <a href="#">Destinations ▾</a>
-        <a href="#">About</a>
-        <a href="#">Video</a>
-      </nav>
-		<script type='text/javascript' src='//pl27455300.profitableratecpm.com/1b/f0/fd/1bf0fd89ebbaf19fe4bff2d9875f36c5.js'></script>
-
-      <div class="nav-actions">
-        <form class="search" role="search" aria-label="Site search" onsubmit="return false;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.71.71l.27.28v.79L20 21.5 21.5 20 15.5 14zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z"/></svg>
-          <input placeholder="Search the blog…" aria-label="Search input"/>
-        </form>
-
-        <button class="icon-btn" id="shareBtn" title="Share">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M18 8a3 3 0 10-2.83-2H9a3 3 0 000 6h6.17A3 3 0 1018 8zM7 9a1 1 0 110-2 1 1 0 010 2zm10-3a1 1 0 110 2 1 1 0 010-2zm0 10a3 3 0 10-2.83 2H9a3 3 0 100-6h5.17A3 3 0 1017 16zM7 17a1 1 0 110-2 1 1 0 010 2zm10 0a1 1 0 110-2 1 1 0 010 2z"/>
-          </svg>
-        </button>
-
-        <button class="icon-btn" title="Save">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 2h9l5 5v13a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h12V8h-4V4H6z"/></svg>
-        </button>
-      </div>
-    </div>
-  </header>
-	<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-	<script type='text/javascript' src='//pl27455300.profitableratecpm.com/1b/f0/fd/1bf0fd89ebbaf19fe4bff2d9875f36c5.js'></script>
-
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container hero-inner">
-      <span class="kicker">Inspiration</span>
-      <h1>24 Gorgeous Travel Blogs You’ll Love in 2025</h1>
-      <p>Taking storytelling to the next level — a curated list of beautiful, well-designed travel blogs.</p>
-      <div class="hero-cta">
-        <button class="btn" id="readBtn">Read My Blog</button>
-        <button class="btn ghost">Watch My Video</button>
-      </div>
-
-      <div class="meta">
-        <img alt="" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=240&auto=format&fit=crop" />
-        <div>
-          <strong>Pete R.</strong> · Solo traveler & photographer<br/>
-          <small>Updated on <time datetime="2025-07-21">Jul 21, 2025</time></small>
-        </div>
-      </div>
-
-      <div class="cats">
-        <span class="pill">Planning</span>
-        <span class="pill">Destinations</span>
-        <span class="pill">Backpacking</span>
-        <span class="pill">Gear</span>
-        <span class="pill">Photography</span>
-      </div>
-    </div>
-  </section>
-	<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-  <!-- Content -->
-  <main class="container">
-    <section class="grid">
-      <!-- Left: Feature article -->
-      <article class="span-7 card feature shadow" aria-labelledby="featTitle">
-        <div class="media">
-          <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2200&auto=format&fit=crop" alt="Laptop on a beach at sunset" />
-          <span class="badge">Editor’s Pick</span>
-        </div>
-        <div class="content">
-          <span class="kicker">Deep Dive</span>
-          <h2 id="featTitle" class="title">What Makes a Travel Blog Truly Beautiful?</h2>
-          <p class="desc">From typography and color to narrative voice, we break down the elements that turn a simple travel diary into an unforgettable reading experience.</p>
-        </div>
-      </article>
-
-      <!-- Right: list item #7 like the screenshot -->
-      <div class="span-5 card shadow">
-        <div class="list-card">
-          <div class="n">7</div>
-          <div class="thumb">
-            <img src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1600&auto=format&fit=crop" alt="Blue mountains at sunset" />
-          </div>
-          <div class="text">
-            <div class="h">Notes From The Road</div>
-            <p class="desc" style="margin:.35rem 0 0">
-              One of my new favorite discoveries is <a href="#">Notes from the Road</a>, a travel blog by Erik Gauger who explores the world by road, kayak, and on foot—bringing personal, powerful, and funny stories.
-            </p>
-          </div>
-        </div>
-        <div style="padding:0 14px 14px">
-          <a class="pill" href="#" aria-label="Explore Notes From The Road">Explore</a>
-        </div>
-      </div>
-    </section>
-	  <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-    <!-- Another row of small cards (optional showcase) -->
-    <section class="grid">
-      <article class="span-5 card">
-        <img src="https://images.unsplash.com/photo-1500534314210-8b1b0b2a0d9b?q=80&w=1600&auto=format&fit=crop" alt="">
-        <div style="padding:14px 16px">
-          <span class="kicker">Story</span>
-          <h3 class="title" style="font-size:1.1rem">Firelight in the Dark Divide</h3>
-          <p class="desc">A backpacking trip to the solitary wilderness in southwestern Washington that rekindled my love of campfires.</p>
-        </div>
-      </article>
-
-      <article class="span-7 card">
-        <img src="https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=2000&auto=format&fit=crop" alt="">
-        <div style="padding:14px 16px">
-          <span class="kicker">Guide</span>
-          <h3 class="title" style="font-size:1.1rem">How To Plan a 3-Month Backpacking Route</h3>
-          <p class="desc">Budgeting, visas, gear, and a flexible route template you can duplicate.</p>
-        </div>
-      </article>
-    </section>
-  </main>
-	<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-  <!-- Footer -->
-  <footer>
-    <div class="container foot">
-      <div class="brand"><i class="dot"></i><span>BucketListly Blog</span></div>
-      <small>© 2025 • Built with love for travelers.</small>
-      <div class="nav-actions" aria-label="Social">
-        <a class="icon-btn" href="#" aria-label="Instagram">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h10a5 5 0 015 5v10a5 5 0 01-5 5H7a5 5 0 01-5-5V7a5 5 0 015-5zm5 5a5 5 0 100 10 5 5 0 000-10zm6-.5a1.5 1.5 0 10.001 3.001A1.5 1.5 0 0018 6.5zM12 9a3 3 0 110 6 3 3 0 010-6z"/></svg>
-        </a>
-        <a class="icon-btn" href="#" aria-label="Pinterest">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-3.53 19.38c-.05-.82-.1-2.08.02-2.98.11-.79.74-5.05.74-5.05s-.19-.38-.19-.94c0-.88.51-1.53 1.14-1.53.54 0 .8.41.8.91 0 .55-.35 1.38-.53 2.15-.15.64.33 1.17.97 1.17 1.16 0 2.05-1.22 2.05-2.97 0-1.55-1.12-2.64-2.71-2.64-1.85 0-2.94 1.39-2.94 2.83 0 .56.22 1.16.49 1.49a.2.2 0 01.05.19c-.05.21-.16.67-.18.76-.03.12-.1.15-.23.09-.86-.4-1.39-1.65-1.39-2.65 0-2.16 1.57-4.15 4.53-4.15 2.38 0 4.22 1.7 4.22 3.97 0 2.36-1.49 4.27-3.56 4.27-.7 0-1.35-.36-1.57-.78 0 0-.34 1.35-.42 1.68-.16.62-.6 1.4-.9 1.88A10 10 0 1012 2z"/></svg>
-        </a>
-        <a class="icon-btn" href="#" aria-label="YouTube">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6a3 3 0 00-2.1 2.1C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8zM9.6 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
-        </a>
-      </div>
-    </div>
-  </footer>
-
-  <dialog id="menuDlg" style="border:0;border-radius:16px;padding:0;max-width:380px;width:92%">
-    <div class="card" style="padding:14px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
-        <strong>Menu</strong>
-        <button class="icon-btn" id="closeMenu" aria-label="Close menu">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7 2.9 18.3 9.2 12 2.9 5.7 4.3 4.3l6.3 6.3 6.3-6.3z"/></svg>
-        </button>
-      </div>
-      <div style="display:grid;gap:.5rem">
-        <a class="pill" href="#">Planning</a>
-        <a class="pill" href="#">Destinations</a>
-        <a class="pill" href="#">About</a>
-        <a class="pill" href="#">Video</a>
-      </div>
-    </div>
-  </dialog>
-	<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
   <script>
-    // Mobile menu
-    const menu = document.getElementById('menuDlg');
-    document.getElementById('openMenu').addEventListener('click',()=>menu.showModal());
-    document.getElementById('closeMenu').addEventListener('click',()=>menu.close());
+    // 3D Background
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,1000);
+    const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('bg')});
+    renderer.setSize(window.innerWidth, window.innerHeight);
 
-    // Share button
-    document.getElementById('shareBtn').addEventListener('click', async () => {
-      try{
-        if(navigator.share){
-          await navigator.share({title:document.title, text:'Check out this travel blog layout!', url:location.href});
-        }else{
-          await navigator.clipboard.writeText(location.href);
-          alert('Link copied!');
-        }
-      }catch(e){}
+    const geometry = new THREE.TorusKnotGeometry(10,3,200,32);
+    const material = new THREE.MeshStandardMaterial({color:0x00ffff, wireframe:true});
+    const knot = new THREE.Mesh(geometry, material);
+    scene.add(knot);
+
+    const light = new THREE.PointLight(0xffffff,1.2);
+    light.position.set(20,20,20);
+    scene.add(light);
+
+    camera.position.z = 60;
+    function animate() {
+      requestAnimationFrame(animate);
+      knot.rotation.x += 0.01;
+      knot.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize',()=>{
+      camera.aspect = window.innerWidth/window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Demo CTA
-    document.getElementById('readBtn').addEventListener('click',()=>window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}));
+    // Popup Logic
+    let userName = "";
+    function saveName(){
+      const input = document.getElementById("username").value;
+      if(input.trim() !== ""){
+        userName = input;
+        document.getElementById("popup").style.display = "none";
+      }
+    }
+
+    // Chat Logic
+    function sendMessage(){
+      const msgInput = document.getElementById("chatInput");
+      const msg = msgInput.value;
+      if(msg.trim() !== ""){
+        const chatBox = document.getElementById("chatMessages");
+        const div = document.createElement("div");
+        div.innerHTML = "<b>"+userName+":</b> "+msg;
+        chatBox.appendChild(div);
+        msgInput.value="";
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    }
   </script>
 </body>
-          </html>
-
-
-
-
-
+</html>
