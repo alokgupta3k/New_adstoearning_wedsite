@@ -1,153 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>My Website</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login & Home</title>
   <style>
-    body {margin:0;font-family:Arial, sans-serif;background:#f3f4f6;}
-    .container {display:flex;justify-content:center;align-items:center;min-height:100vh;padding:20px;}
-    
-    /* Card */
-    .card {
-      background:white;padding:30px;border-radius:16px;box-shadow:0 6px 18px rgba(0,0,0,0.15);
-      width:100%;max-width:380px;text-align:center;animation:fadeIn 0.6s ease;
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
     }
-    .card h2 {margin-bottom:20px;}
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
     input {
-      width:100%;padding:12px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font-size:16px;
+      width: 90%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
     }
     button {
-      width:100%;padding:12px;margin:10px 0;background:#4f46e5;color:white;border:none;border-radius:8px;
-      font-size:16px;cursor:pointer;transition:0.3s;
+      width: 95%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      background: #ff9800;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
     }
-    button:hover {background:#4338ca;}
-    .linkBtn {background:transparent;color:#4f46e5;text-decoration:underline;}
-    
-    /* Navbar */
-    .navbar {
-      display:flex;justify-content:space-around;align-items:center;padding:10px;
-      background:#1f2937;color:white;position:fixed;bottom:0;width:100%;
+    button:hover {
+      background: #e68900;
     }
-    .navbar button {flex:1;margin:0 5px;padding:10px;font-size:14px;}
-    
-    /* Pages */
-    #homePage,#signupPage {display:none;}
-    
-    /* Cards in Home */
-    .cards {display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin-top:20px;}
-    .homeCard {
-      flex:1;min-width:150px;background:linear-gradient(135deg,#4f46e5,#3b82f6);
-      color:white;padding:20px;border-radius:14px;box-shadow:0 5px 12px rgba(0,0,0,0.2);
-      transition:transform 0.3s;
+    .link-btn {
+      background: transparent;
+      color: #fff;
+      margin-top: 10px;
+      text-decoration: underline;
     }
-    .homeCard:hover {transform:scale(1.05);}
-    
-    @keyframes fadeIn {from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
-    
-    /* Mobile Responsive */
-    @media(max-width:600px){
-      .cards {flex-direction:column;}
-      .homeCard {min-width:100%;}
+    .hidden {
+      display: none;
+    }
+    nav {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+    nav button {
+      background: transparent;
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .page {
+      animation: slideUp 0.7s ease;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: scale(0.9);}
+      to {opacity: 1; transform: scale(1);}
+    }
+    @keyframes slideUp {
+      from {transform: translateY(20px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
     }
   </style>
 </head>
 <body>
+  <div class="container" id="loginPage">
+    <h2>🔐 Login</h2>
+    <input type="text" id="loginUser" placeholder="Username" />
+    <input type="password" id="loginPass" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <button class="link-btn" onclick="showSignup()">Create Account</button>
+  </div>
 
-  <!-- Login Page -->
-  <div id="loginPage" class="container">
-    <div class="card">
-      <h2>🔑 Login</h2>
-      <input type="text" id="loginUser" placeholder="Username">
-      <input type="password" id="loginPass" placeholder="Password">
-      <button onclick="login()">Login</button>
-      <button class="linkBtn" onclick="showSignup()">New here? Signup</button>
+  <div class="container hidden" id="signupPage">
+    <h2>📝 Signup</h2>
+    <input type="text" id="signupUser" placeholder="Choose Username" />
+    <input type="password" id="signupPass" placeholder="Choose Password" />
+    <button id="signupBtn">Signup</button>
+    <button class="link-btn" onclick="showLogin()">Already have account? Login</button>
+  </div>
+
+  <div class="container hidden" id="homePage">
+    <nav>
+      <button onclick="showPage('home')">🏠 Home</button>
+      <button onclick="showPage('allwed')">🌐 All Website</button>
+      <button onclick="showPage('earn')">💰 Earn</button>
+      <button onclick="showPage('profile')">👤 Profile</button>
+    </nav>
+
+    <div id="home" class="page">
+      <h2>Welcome 🎉</h2>
+      <p>This is your colorful Home Page with animations ✨</p>
+    </div>
+
+    <div id="allwed" class="page hidden">
+      <h2>🌐 All Website</h2>
+      <p>Welcome to all websites section 🚀</p>
+    </div>
+
+    <div id="earn" class="page hidden">
+      <h2>💰 Earn</h2>
+      <p>Earn coins by using the website 🎯</p>
+    </div>
+
+    <div id="profile" class="page hidden">
+      <h2>👤 Profile</h2>
+      <p id="profileInfo"></p>
+      <button id="logoutBtn">🚪 Logout</button>
     </div>
   </div>
 
-  <!-- Signup Page -->
-  <div id="signupPage" class="container">
-    <div class="card">
-      <h2>📝 Signup</h2>
-      <input type="text" id="signupUser" placeholder="Username">
-      <input type="password" id="signupPass" placeholder="Password">
-      <button onclick="signup()">Create Account</button>
-      <button class="linkBtn" onclick="showLogin()">Already have account? Login</button>
-    </div>
-  </div>
+  <script>
+    const loginPage = document.getElementById("loginPage");
+    const signupPage = document.getElementById("signupPage");
+    const homePage = document.getElementById("homePage");
+    const profileInfo = document.getElementById("profileInfo");
 
-  <!-- Home Page -->
-  <div id="homePage">
-    <div class="container" style="flex-direction:column;">
-      <h2>🎉 Welcome <span id="userName"></span>!</h2>
-      <div class="cards">
-        <div class="homeCard">💰 Coins: <span id="coins">0</span></div>
-        <div class="homeCard">📚 My Websites</div>
-        <div class="homeCard">👤 Profile</div>
-      </div>
-    </div>
-    <div class="navbar">
-      <button onclick="openPage('home')">Home</button>
-      <button onclick="openPage('web')">All Web</button>
-      <button onclick="openPage('earn')">Earn</button>
-      <button onclick="openPage('profile')">Profile</button>
-    </div>
-  </div>
-
-<script>
-  // Load users or set default admin
-  let users = JSON.parse(localStorage.getItem("users")) || [{user:"admin",pass:"1234",coins:500}];
-
-  function login(){
-    let u=document.getElementById("loginUser").value.trim();
-    let p=document.getElementById("loginPass").value.trim();
-    let found=users.find(x=>x.user===u && x.pass===p);
-    if(found){
-      localStorage.setItem("currentUser",u);
-      showHome(u);
-    } else {
-      alert("❌ Invalid Username or Password!");
+    function showSignup() {
+      loginPage.classList.add("hidden");
+      signupPage.classList.remove("hidden");
     }
-  }
+    function showLogin() {
+      signupPage.classList.add("hidden");
+      loginPage.classList.remove("hidden");
+    }
 
-  function signup(){
-    let u=document.getElementById("signupUser").value.trim();
-    let p=document.getElementById("signupPass").value.trim();
-    if(u && p){
-      let exist=users.find(x=>x.user===u);
-      if(exist){ alert("⚠️ Username already exists!"); return; }
-      users.push({user:u,pass:p,coins:100});
-      localStorage.setItem("users",JSON.stringify(users));
-      alert("✅ Signup Successful! Please login.");
-      showLogin();
-    } else alert("Enter all fields!");
-  }
+    document.getElementById("signupBtn").onclick = () => {
+      const user = document.getElementById("signupUser").value;
+      const pass = document.getElementById("signupPass").value;
+      if (user && pass) {
+        localStorage.setItem(user, pass);
+        alert("Signup successful 🎉 Now login!");
+        showLogin();
+      } else {
+        alert("Please fill all fields!");
+      }
+    };
 
-  function showSignup(){
-    document.getElementById("loginPage").style.display="none";
-    document.getElementById("signupPage").style.display="flex";
-  }
-  function showLogin(){
-    document.getElementById("signupPage").style.display="none";
-    document.getElementById("loginPage").style.display="flex";
-  }
+    document.getElementById("loginBtn").onclick = () => {
+      const user = document.getElementById("loginUser").value;
+      const pass = document.getElementById("loginPass").value;
+      const stored = localStorage.getItem(user);
+      if (stored && stored === pass) {
+        localStorage.setItem("loggedInUser", user);
+        loginPage.classList.add("hidden");
+        signupPage.classList.add("hidden");
+        homePage.classList.remove("hidden");
+        profileInfo.textContent = `Welcome ${user} 🎉`;
+      } else {
+        alert("Invalid credentials ❌");
+      }
+    };
 
-  function showHome(u){
-    document.getElementById("loginPage").style.display="none";
-    document.getElementById("signupPage").style.display="none";
-    document.getElementById("homePage").style.display="block";
-    document.getElementById("userName").innerText=u;
-    let usr=users.find(x=>x.user===u);
-    document.getElementById("coins").innerText=usr.coins;
-  }
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
+      document.getElementById(pageId).classList.remove("hidden");
+    }
 
-  function openPage(p){
-    alert("Opening "+p+" page...");
-  }
-
-  // Auto login check
-  let cu=localStorage.getItem("currentUser");
-  if(cu){ showHome(cu); }
-</script>
+    document.getElementById("logoutBtn").onclick = () => {
+      localStorage.removeItem("loggedInUser");
+      homePage.classList.add("hidden");
+      loginPage.classList.remove("hidden");
+    };
+  </script>
 </body>
 </html>
