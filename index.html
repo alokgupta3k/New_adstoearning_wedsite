@@ -1,545 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta name='admaven-placement' content=BqjaEpdgH>
-	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6868314278571118"
-     crossorigin="anonymous"></script>
-	<meta name='admaven-placement' content=BqjaEpdgH>
-	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6868314278571118"
-     crossorigin="anonymous"></script>
-  <meta charset="UTF-8" />
-  <meta name="google-adsense-account" content="ca-pub-6868314278571118">
-	<meta name="google-adsense-account" content="ca-pub-6868314278571118">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Advanced 3D Website with Chat</title>
+  <meta charset="UTF-8">
+  <title>Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body,html {
-      margin:0;
-      padding:0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background:#000;
-      overflow-x: hidden;
+    body {margin:0;font-family:Arial, sans-serif;background:#f3f4f6;display:flex;min-height:100vh;}
+
+    /* Sidebar */
+    .sidebar {
+      width:220px;background:#1f2937;color:white;display:flex;flex-direction:column;align-items:center;
+      padding:20px 0;transition:all 0.3s ease;
     }
-    canvas {
-      position: fixed;
-      top:0; left:0;
-      width:100%;
-      height:100%;
-      z-index: -1;
+    .sidebar h2 {margin-bottom:20px;font-size:20px;}
+    .sidebar button {
+      width:180px;padding:12px;margin:6px 0;background:#374151;color:white;border:none;border-radius:8px;
+      cursor:pointer;font-size:15px;transition:0.3s;
     }
-    .popup {
-      position: fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background: rgba(0,0,0,0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color:#fff;
-      z-index: 1000;
+    .sidebar button:hover {background:#4b5563;}
+
+    /* Main */
+    .main {flex:1;padding:20px;overflow-y:auto;}
+    .card {
+      background:white;padding:20px;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,0.15);margin-bottom:20px;
     }
-    .popup-content {
-      background: #111;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 0 20px cyan;
-      max-width:90%;
-    }
-    .popup input {
-      padding: 10px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 8px;
-      outline: none;
-      width: 80%;
-    }
-    .popup button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      border:none;
-      border-radius: 8px;
-      cursor:pointer;
-      background: cyan;
-      color:#000;
-      font-weight: bold;
-    }
-    .content {
-      position: relative;
-      z-index: 1;
-      background: rgba(255,255,255,0.9);
-      padding: 40px 20px;
-      color:#000;
-      max-width: 1200px;
-      margin: auto;
-    }
-    .content h1, .content h2 {
-      color:#111;
-    }
-    .content p, .content li {
-      line-height:1.7;
-      text-align: justify;
-    }
-    /* Ads Placeholder */
-    .ads-space {
-      width: 100%;
-      height: 120px;
-      background: #f8f8f8;
-      color: #666;
-      text-align: center;
-      line-height: 120px;
-      margin: 30px 0;
-      border: 2px dashed #aaa;
+    h3 {margin-top:0;}
+    .stats {display:flex;gap:20px;flex-wrap:wrap;}
+    .statBox {
+      flex:1;min-width:200px;background:#4f46e5;color:white;padding:20px;border-radius:12px;text-align:center;
       font-size:18px;
     }
-    /* Chat Section */
-    .chat-section {
-      background: #111;
-      color: #fff;
-      border-radius: 15px;
-      padding: 20px;
-      margin-top: 40px;
-      box-shadow: 0 0 15px rgba(0,255,255,0.5);
-    }
-    .chat-messages {
-      max-height:200px;
-      overflow-y:auto;
-      background:#222;
-      padding:10px;
-      border-radius:10px;
-      margin-bottom:15px;
-    }
-    .chat-input {
-      display:flex;
-    }
-    .chat-input input {
-      flex:1;
-      padding:10px;
-      border:none;
-      border-radius: 8px 0 0 8px;
-      outline:none;
-    }
-    .chat-input button {
-      padding:10px 20px;
-      border:none;
-      border-radius:0 8px 8px 0;
-      background: cyan;
-      color:#000;
-      cursor:pointer;
-      font-weight:bold;
-    }
+    canvas {max-width:100%;}
+
+    /* Mobile Responsive */
     @media(max-width:768px){
-      .content{padding:20px 10px;}
-      .popup-content{padding:20px;}
-      .ads-space{height:100px; line-height:100px; font-size:14px;}
+      body {flex-direction:column;}
+      .sidebar {width:100%;flex-direction:row;overflow-x:auto;justify-content:center;}
+      .sidebar h2 {display:none;}
+      .sidebar button {flex:1;min-width:auto;padding:10px;font-size:14px;}
+      .stats {flex-direction:column;}
+      .statBox {min-width:100%;font-size:16px;}
     }
   </style>
 </head>
 <body>
-  <!-- 3D Background -->
-  <canvas id="bg"></canvas>
 
-  <!-- Popup -->
-  <div class="popup" id="popup">
-    <div class="popup-content">
-      <h2>Welcome</h2>
-      <p>Please enter your name to continue:</p>
-      <input type="text" id="username" placeholder="Your Name"/>
-      <br>
-      <button onclick="saveName()">Enter</button>
-    </div>
+  <div class="sidebar">
+    <h2>Admin</h2>
+    <button onclick="showPage('dashboard')">Dashboard</button>
+    <button onclick="showPage('users')">Users</button>
+    <button onclick="showPage('earnings')">Earnings</button>
+    <button onclick="showPage('settings')">Settings</button>
   </div>
- 
-<!-- Romantic Anime Girl (Fully Clothed) Animation (Bottom Side) -->
-<div style="text-align:center; margin:50px 0;">
-  <lottie-player src="https://assets1.lottiefiles.com/packages/lf20_w51pcehl.json"  
-                 background="transparent"  
-                 speed="1"  
-                 style="width:420px; height:200px;"  
-                 loop autoplay>
-  </lottie-player>
-</div>
 
-<!-- Lottie Script -->
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-
-  <!-- Main Content -->
-  <div class="content">
-  	<!-- ================= ARTICLE SECTION ================= -->
-<section id="article" style="padding:60px 20px; position:relative; z-index:2;">
-
-  <!-- 3D Background Animation -->
-  <div id="bg-animation"></div>
-
-  <div style="max-width:1000px; margin:auto; background:rgba(255,255,255,0.92); padding:30px; border-radius:20px; box-shadow:0px 10px 25px rgba(0,0,0,0.2);">
-    <h1 style="text-align:center; font-size:40px; margin-bottom:20px; color:#222; font-family: 'Poppins', sans-serif;">
-      How to Earn Money from a Website
-    </h1>
-
-    <p style="line-height:1.8; font-size:18px; color:#333; text-align:justify;">
-      In today’s digital age, creating a website is one of the best ways to build your online presence and earn money. 
-      Websites can generate income through ads, affiliate marketing, product sales, and much more. 
-      But the real secret lies in **design, content, and user experience**.  
-    </p>
-
-    <h2 style="margin-top:30px; color:#111;">1. Advertising (Google AdSense & Others)</h2>
-    <p style="line-height:1.8; font-size:18px; color:#444;">
-      The most popular way to earn money is by displaying advertisements. Google AdSense allows website owners 
-      to show relevant ads to their visitors. You get paid every time a visitor views or clicks an ad. 
-    </p>
-
-    <!-- ADS SPACE -->
-    <div style="margin:20px 0; padding:20px; background:#f5f5f5; border:2px dashed #aaa; text-align:center; border-radius:10px;">
-      [AD SPACE HERE]
-    </div>
-	  <script type="text/javascript">
-	atOptions = {
-		'key' : '02d681c36d68f365c1e232f4b1ead45c',
-		'format' : 'iframe',
-		'height' : 60,
-		'width' : 468,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/02d681c36d68f365c1e232f4b1ead45c/invoke.js"></script>
-    <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-    <h2 style="margin-top:30px; color:#111;">2. Affiliate Marketing</h2>
-    <p style="line-height:1.8; font-size:18px; color:#444;">
-      Affiliate marketing allows you to promote products or services on your website. When someone purchases through your referral link, you earn a commission. 
-      This works especially well with blogs, product reviews, and niche websites. 
-    </p>
-
-    <!-- ADS SPACE -->
-    <div style="margin:20px 0; padding:20px; background:#f5f5f5; border:2px dashed #aaa; text-align:center; border-radius:10px;">
-      [AD SPACE HERE]
-    </div>
-	  <script type='text/javascript' src='//pl27460230.profitableratecpm.com/ad/cd/2d/adcd2db382ca1b9eb58b68382cbf123a.js'></script>
-    <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-    <h2 style="margin-top:30px; color:#111;">3. Selling Digital Products</h2>
-    <p style="line-height:1.8; font-size:18px; color:#444;">
-      Digital products like eBooks, courses, templates, and software have become extremely popular. 
-      They require effort only once to create and can be sold multiple times, making them a great source of passive income. 
-    </p>
-
-    <h2 style="margin-top:30px; color:#111;">4. Sponsored Content</h2>
-    <p style="line-height:1.8; font-size:18px; color:#444;">
-      If your website gains popularity, brands may approach you to publish sponsored posts. 
-      This is a direct way to earn money without relying on ad clicks. 
-    </p>
-
-    <!-- ADS SPACE -->
-    <div style="margin:20px 0; padding:20px; background:#f5f5f5; border:2px dashed #aaa; text-align:center; border-radius:10px;">
-      [AD SPACE HERE]
-    </div><script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-    <h2 style="margin-top:30px; color:#111;">5. Memberships & Subscriptions</h2>
-    <p style="line-height:1.8; font-size:18px; color:#444;">
-      Websites can also charge for exclusive content, premium tools, or community access. 
-      Platforms like Patreon and custom membership systems make this easy. 
-    </p>
-
-    <p style="margin-top:30px; font-size:20px; text-align:center; color:#111; font-weight:bold;">
-       The key is: High-quality content + SEO + User-friendly design = More traffic & more income!
-    </p>
-  </div>
-</section>
-<header>
-        <h1>Comprehensive Guide to [Your Topic]</h1>
-        <p>Published on August 20, 2025</p>
-    </header>
-	  <script type='text/javascript' src='//pl27455300.profitableratecpm.com/1b/f0/fd/1bf0fd89ebbaf19fe4bff2d9875f36c5.js'></script>
-
-    <!-- Introduction -->
-    <section class="section">
-        <h2>Introduction</h2>
-        <p>This comprehensive guide explores [your topic] in depth, offering insights, practical tips, and expert advice to help you navigate this complex subject. Whether you're a beginner or an expert, this article provides valuable information to enhance your understanding and skills. The following sections cover key concepts, strategies, and trends, with actionable takeaways to apply in your context.</p>
-        <p>[Your topic] is a critical area in today’s world due to its impact on [relevant field/industry]. This article aims to break down complex ideas into digestible information, supported by research and real-world examples. Expect to learn about [key points], with practical applications for [target audience].</p>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. [Continue with relevant content related to your topic.]</p>
-        <p>The goal is to provide a thorough yet accessible resource that empowers you to take action. Let’s dive into the first section.</p>
-        <!-- Approx 500 words in this section when expanded -->
-    </section>
-	  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6868314278571118"
-     crossorigin="anonymous"></script>
-
-    <!-- Ad Placeholder 1 -->
-    <div class="ad-placeholder">Advertisement 1: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 1 -->
-    <section class="section">
-        <h2>Section 1: Understanding the Basics</h2>
-        <p>This section introduces the foundational concepts of [your topic]. [Expand with detailed explanations, examples, and insights. Aim for 2,000-3,000 words per major section to reach the 30,000-word goal.]</p>
-    </section>
-
-    <!-- Ad Placeholder 2 -->
-    <div class="ad-placeholder">Advertisement 2: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 2 -->
-    <section class="section">
-        <h2>Section 2: Key Strategies and Techniques</h2>
-        <p>Explore practical strategies for [your topic]. [Include step-by-step guides, case studies, or data-driven insights.]</p>
-    </section>
-
-    <!-- Ad Placeholder 3 -->
-    <div class="ad-placeholder">Advertisement 3: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 3 -->
-    <section class="section">
-        <h2>Section 3: Advanced Concepts</h2>
-        <p>Dive deeper into advanced aspects of [your topic]. [Provide in-depth analysis, expert opinions, or technical details.]</p>
-    </section>
-	  <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-    <!-- Ad Placeholder 4 -->
-    <div class="ad-placeholder">Advertisement 4: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 4 -->
-    <section class="section">
-        <h2>Section 4: Practical Applications</h2>
-        <p>Learn how to apply [your topic] in real-world scenarios. [Include examples, templates, or tools.]</p>
-    </section>
-
-    <!-- Ad Placeholder 5 -->
-    <div class="ad-placeholder">Advertisement 5: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 5 -->
-    <section class="section">
-        <h2>Section 5: Trends and Future Outlook</h2>
-        <p>Discuss emerging trends and the future of [your topic]. [Use recent data or expert predictions.]</p>
-    </section>
-
-    <!-- Ad Placeholder 6 -->
-    <div class="ad-placeholder">Advertisement 6: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 6 -->
-    <section class="section">
-        <h2>Section 6: Challenges and Solutions</h2>
-        <p>Address common challenges in [your topic] and how to overcome them. [Provide problem-solving tips.]</p>
-    </section>
-
-    <!-- Ad Placeholder 7 -->
-    <div class="ad-placeholder">Advertisement 7: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 7 -->
-    <section class="section">
-        <h2>Section 7: Case Studies</h2>
-        <p>Examine real-world case studies related to [your topic]. [Include detailed examples and outcomes.]</p>
-    </section>
-
-    <!-- Ad Placeholder 8 -->
-    <div class="ad-placeholder">Advertisement 8: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 8 -->
-    <section class="section">
-        <h2>Section 8: Tools and Resources</h2>
-        <p>Discover the best tools and resources for [your topic]. [List and describe relevant tools.]</p>
-    </section>
-
-    <!-- Ad Placeholder 9 -->
-    <div class="ad-placeholder">Advertisement 9: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 9 -->
-    <section class="section">
-        <h2>Section 9: Expert Tips</h2>
-        <p>Gain insights from experts in [your topic]. [Include quotes or advice from industry leaders.]</p>
-    </section>
-	  <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-    <!-- Ad Placeholder 10 -->
-    <div class="ad-placeholder">Advertisement 10: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 10 -->
-    <section class="section">
-        <h2>Section 10: FAQs</h2>
-        <p>Answer frequently asked questions about [your topic]. [Provide clear, concise answers.]</p>
-    </section>
-
-    <!-- Ad Placeholder 11 -->
-    <div class="ad-placeholder">Advertisement 11: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 11 -->
-    <section class="section">
-        <h2>Section 11: Getting Started</h2>
-        <p>A beginner’s guide to getting started with [your topic]. [Include actionable steps.]</p>
-    </section>
-
-    <!-- Ad Placeholder 12 -->
-    <div class="ad-placeholder">Advertisement 12: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 12 -->
-    <section class="section">
-        <h2>Section 12: Measuring Success</h2>
-        <p>Learn how to measure success in [your topic]. [Discuss metrics and evaluation methods.]</p>
-    </section>
-
-    <!-- Ad Placeholder 13 -->
-    <div class="ad-placeholder">Advertisement 13: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Section 13 -->
-    <section class="section">
-        <h2>Section 13: Common Mistakes to Avoid</h2>
-        <p>Highlight common pitfalls in [your topic] and how to avoid them. [Provide examples.]</p>
-    </section>
-	  <script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-
-    <!-- Ad Placeholder 14 -->
-    <div class="ad-placeholder">Advertisement 14: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <!-- Conclusion -->
-    <section class="section">
-        <h2>Conclusion</h2>
-        <p>Summarize key takeaways and encourage readers to apply what they’ve learned. [Wrap up with a call to action.]</p>
-    </section>
-
-    <!-- Ad Placeholder 15 -->
-    <div class="ad-placeholder">Advertisement 15: Insert Ad Code Here</div>
-<script async="async" data-cfasync="false" src="//pl27455365.profitableratecpm.com/e5dafadae18e52e295387644ed6bbed2/invoke.js"></script>
-<div id="container-e5dafadae18e52e295387644ed6bbed2"></div>
-    <footer>
-        <p>&copy; 2025 Your Website. All rights reserved.</p>
-    </footer>
-<!-- Lottie Script -->
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-
-<!-- ================= BACKGROUND 3D ANIMATION ================= -->
-<style>
-#bg-animation {
-  position:absolute;
-  top:0; left:0;
-  width:100%; height:100%;
-  z-index:-1;
-  background: linear-gradient(135deg, #89f7fe, #66a6ff);
-  overflow:hidden;
-}
-
-#bg-animation::before, #bg-animation::after {
-  content:"";
-  position:absolute;
-  border-radius:50%;
-  animation: float 10s infinite ease-in-out;
-  opacity:0.4;
-}
-
-#bg-animation::before {
-  width:300px; height:300px;
-  background:#ff6ec7;
-  top:10%; left:20%;
-}
-
-#bg-animation::after {
-  width:400px; height:400px;
-  background:#6effa1;
-  bottom:15%; right:25%;
-}
-
-@keyframes float {
-  0% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-50px) scale(1.2); }
-  100% { transform: translateY(0) scale(1); }
-}
-
-/* Mobile Friendly */
-@media (max-width:768px){
-  #article h1 { font-size:28px; }
-  #article p { font-size:16px; }
-}
-</style>
-    
-    <!-- Chat Section at Bottom -->
-    <div class="chat-section">
-      <h2> Live Chat</h2>
-      <div class="chat-messages" id="chatMessages"></div>
-      <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
+  <div class="main">
+    <!-- Dashboard -->
+    <div id="dashboard" class="card">
+      <h3>📊 Dashboard</h3>
+      <div class="stats">
+        <div class="statBox">Users<br><b id="totalUsers">0</b></div>
+        <div class="statBox">Earnings<br>₹<b id="totalEarnings">0</b></div>
+        <div class="statBox">Active Today<br><b id="activeUsers">0</b></div>
       </div>
+      <canvas id="chart" height="120"></canvas>
+    </div>
+
+    <!-- Users -->
+    <div id="users" class="card" style="display:none;">
+      <h3>👤 All Users</h3>
+      <ul id="userList"></ul>
+    </div>
+
+    <!-- Earnings -->
+    <div id="earnings" class="card" style="display:none;">
+      <h3>💰 Earnings</h3>
+      <p>Monthly Earnings Report</p>
+      <canvas id="earnChart" height="120"></canvas>
+    </div>
+
+    <!-- Settings -->
+    <div id="settings" class="card" style="display:none;">
+      <h3>⚙️ Settings</h3>
+      <p>Coming Soon...</p>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // 3D Background
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight,0.1,1000);
-    const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('bg')});
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    // Dummy data for users
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    document.getElementById("totalUsers").innerText = users.length;
+    document.getElementById("activeUsers").innerText = Math.floor(users.length/2);
+    document.getElementById("totalEarnings").innerText = users.length * 50;
 
-    const geometry = new THREE.TorusKnotGeometry(10,3,200,32);
-    const material = new THREE.MeshStandardMaterial({color:0x00ffff, wireframe:true});
-    const knot = new THREE.Mesh(geometry, material);
-    scene.add(knot);
-
-    const light = new THREE.PointLight(0xffffff,1.2);
-    light.position.set(20,20,20);
-    scene.add(light);
-
-    camera.position.z = 60;
-    function animate() {
-      requestAnimationFrame(animate);
-      knot.rotation.x += 0.01;
-      knot.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    window.addEventListener('resize',()=>{
-      camera.aspect = window.innerWidth/window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+    // Show Users
+    let userList=document.getElementById("userList");
+    users.forEach(u=>{
+      let li=document.createElement("li");
+      li.textContent=u.name+" - "+u.email+" (Coins: "+(u.coins||0)+")";
+      userList.appendChild(li);
     });
 
-    // Popup Logic
-    let userName = "";
-    function saveName(){
-      const input = document.getElementById("username").value;
-      if(input.trim() !== ""){
-        userName = input;
-        document.getElementById("popup").style.display = "none";
+    // Chart.js Example
+    const ctx=document.getElementById('chart');
+    new Chart(ctx,{
+      type:'line',
+      data:{
+        labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+        datasets:[{label:'Active Users',data:[5,9,7,12,8,15,10],borderColor:'#4f46e5',fill:false,tension:0.4}]
       }
-    }
+    });
 
-    // Chat Logic
-    function sendMessage(){
-      const msgInput = document.getElementById("chatInput");
-      const msg = msgInput.value;
-      if(msg.trim() !== ""){
-        const chatBox = document.getElementById("chatMessages");
-        const div = document.createElement("div");
-        div.innerHTML = "<b>"+userName+":</b> "+msg;
-        chatBox.appendChild(div);
-        msgInput.value="";
-        chatBox.scrollTop = chatBox.scrollHeight;
+    const ectx=document.getElementById('earnChart');
+    new Chart(ectx,{
+      type:'bar',
+      data:{
+        labels:['Jan','Feb','Mar','Apr','May','Jun'],
+        datasets:[{label:'Earnings (₹)',data:[500,700,650,800,900,750],backgroundColor:'#10b981'}]
       }
+    });
+
+    // Page switch
+    function showPage(page){
+      document.querySelectorAll('.card').forEach(c=>c.style.display="none");
+      document.getElementById(page).style.display="block";
     }
   </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
