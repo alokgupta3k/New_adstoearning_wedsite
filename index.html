@@ -1,197 +1,698 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login & Home</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: "Poppins", sans-serif;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .container {
-      width: 100%;
-      max-width: 400px;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      animation: fadeIn 1s ease;
-    }
-    h2 {
-      margin-bottom: 20px;
-    }
-    input {
-      width: 90%;
-      padding: 12px;
-      margin: 8px 0;
-      border: none;
-      border-radius: 8px;
-      outline: none;
-      font-size: 14px;
-    }
-    button {
-      width: 95%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: #ff9800;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover {
-      background: #e68900;
-    }
-    .link-btn {
-      background: transparent;
-      color: #fff;
-      margin-top: 10px;
-      text-decoration: underline;
-    }
-    .hidden {
-      display: none;
-    }
-    nav {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 10px;
-      display: flex;
-      justify-content: space-around;
-      border-radius: 12px;
-      margin-bottom: 15px;
-    }
-    nav button {
-      background: transparent;
-      color: #fff;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .page {
-      animation: slideUp 0.7s ease;
-    }
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.9);}
-      to {opacity: 1; transform: scale(1);}
-    }
-    @keyframes slideUp {
-      from {transform: translateY(20px); opacity: 0;}
-      to {transform: translateY(0); opacity: 1;}
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTDownloader - Download YouTube Videos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #ff0000 0%, #cc0000 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo i {
+            margin-right: 15px;
+            font-size: 2.8rem;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .download-container {
+            background: white;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .download-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .input-group {
+            display: flex;
+            margin: 2rem 0;
+        }
+        
+        .url-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 50px 0 0 50px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .url-input:focus {
+            border-color: #ff0000;
+        }
+        
+        .paste-btn {
+            padding: 1rem;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-left: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fetch-btn {
+            background: linear-gradient(90deg, #ff0000 0%, #cc0000 100%);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .fetch-btn:hover {
+            background: linear-gradient(90deg, #cc0000 0%, #a00000 100%);
+        }
+        
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            color: #777;
+        }
+        
+        .or-divider::before,
+        .or-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #ddd;
+        }
+        
+        .or-divider span {
+            padding: 0 1rem;
+        }
+        
+        .search-group {
+            display: flex;
+            margin-top: 1rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 50px 0 0 50px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: #ff0000;
+        }
+        
+        .search-btn {
+            background: linear-gradient(90deg, #ff0000 0%, #cc0000 100%);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 0 50px 50px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            background: linear-gradient(90deg, #cc0000 0%, #a00000 100%);
+        }
+        
+        .video-result {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-top: 2rem;
+            text-align: left;
+        }
+        
+        .video-info {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+        
+        .video-thumbnail {
+            width: 200px;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-right: 1.5rem;
+        }
+        
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-details {
+            flex: 1;
+        }
+        
+        .video-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+        
+        .video-metadata {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .download-options {
+            margin-top: 1.5rem;
+        }
+        
+        .quality-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .quality-btn {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .quality-btn i {
+            margin-right: 8px;
+            color: #ff0000;
+        }
+        
+        .quality-btn:hover {
+            background: #ff0000;
+            color: white;
+            border-color: #ff0000;
+        }
+        
+        .quality-btn:hover i {
+            color: white;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 4rem 0;
+        }
+        
+        .feature {
+            flex: 1;
+            min-width: 250px;
+            text-align: center;
+            padding: 1.5rem;
+            margin: 1rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #ff0000;
+            margin-bottom: 1rem;
+        }
+        
+        .feature h3 {
+            margin-bottom: 1rem;
+            color: #ff0000;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            color: white;
+            padding: 0 20px;
+        }
+        
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .download-status {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-top: 2rem;
+            text-align: center;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .status-text {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-text i {
+            margin-right: 10px;
+        }
+        
+        .success-message {
+            color: #4caf50;
+            display: none;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group, .search-group {
+                flex-direction: column;
+            }
+            
+            .url-input, .search-input {
+                border-radius: 50px;
+                margin-bottom: 1rem;
+            }
+            
+            .paste-btn {
+                display: none;
+            }
+            
+            .fetch-btn, .search-btn {
+                border-radius: 50px;
+            }
+            
+            .video-info {
+                flex-direction: column;
+            }
+            
+            .video-thumbnail {
+                width: 100%;
+                height: auto;
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .tagline {
+                font-size: 1rem;
+                padding: 0 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <script type='text/javascript' src='//pl27460230.profitableratecpm.com/ad/cd/2d/adcd2db382ca1b9eb58b68382cbf123a.js'></script>
-  <div class="container" id="loginPage">
-    <h2>🔐 Login</h2>
-    <input type="text" id="loginUser" placeholder="Username" />
-    <input type="password" id="loginPass" placeholder="Password" />
-    <button id="loginBtn">Login</button>
-    <button class="link-btn" onclick="showSignup()">Create Account</button>
-  </div>
-  <script type='text/javascript' src='//pl27460230.profitableratecpm.com/ad/cd/2d/adcd2db382ca1b9eb58b68382cbf123a.js'></script>
-
-  <div class="container hidden" id="signupPage">
-    <h2>📝 Signup</h2>
-    <input type="text" id="signupUser" placeholder="Choose Username" />
-    <input type="password" id="signupPass" placeholder="Choose Password" />
-    <button id="signupBtn">Signup</button>
-    <button class="link-btn" onclick="showLogin()">Already have account? Login</button>
-  </div>
-
-  <div class="container hidden" id="homePage">
-    <nav>
-      <button onclick="showPage('home')">🏠 Home</button>
-      <button onclick="showPage('allwed')">🌐 All Website</button>
-      <button onclick="showPage('earn')">💰 Earn</button>
-      <button onclick="showPage('profile')">👤 Profile</button>
-    </nav>
-
-    <div id="home" class="page">
-      <script type='text/javascript' src='//pl27460230.profitableratecpm.com/ad/cd/2d/adcd2db382ca1b9eb58b68382cbf123a.js'></script>
-      <h2>Welcome 🎉</h2>
-      <p>This is your colorful Home Page with animations ✨</p>
+    <header>
+        <div class="logo">
+            <i class="fab fa-youtube"></i>
+            <span>YTDownloader</span>
+        </div>
+        <div class="tagline">Download YouTube videos in high quality for free. MP4, MP3, and more formats available.</div>
+    </header>
+    
+    <div class="container">
+        <div class="download-container">
+            <h2><i class="fas fa-download"></i> Download YouTube Videos</h2>
+            <p>Paste YouTube URL below or search for videos</p>
+            
+            <div class="input-group">
+                <input type="text" class="url-input" id="urlInput" placeholder="Paste YouTube URL here...">
+                <button class="paste-btn" id="pasteBtn">
+                    <i class="fas fa-paste"></i>
+                </button>
+                <button class="fetch-btn" id="fetchBtn">
+                    <i class="fas fa-bolt"></i> Fetch Video
+                </button>
+            </div>
+            
+            <div class="or-divider">
+                <span>OR</span>
+            </div>
+            
+            <div class="search-group">
+                <input type="text" class="search-input" id="searchInput" placeholder="Search for YouTube videos...">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </div>
+        
+        <div class="video-result" id="videoResult">
+            <h3><i class="fas fa-video"></i> Video Details</h3>
+            
+            <div class="video-info">
+                <div class="video-thumbnail">
+                    <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video Thumbnail" id="videoThumb">
+                </div>
+                <div class="video-details">
+                    <h4 class="video-title" id="videoTitle">How to Download YouTube Videos</h4>
+                    <div class="video-metadata">
+                        <span id="videoDuration"><i class="fas fa-clock"></i> 10:30</span> | 
+                        <span id="videoViews"><i class="fas fa-eye"></i> 1.5M views</span> | 
+                        <span id="videoDate"><i class="fas fa-calendar"></i> Jun 15, 2023</span>
+                    </div>
+                    <p id="videoDesc">This is a sample description of the YouTube video. The actual description would be fetched from YouTube.</p>
+                </div>
+            </div>
+            
+            <div class="download-options">
+                <h4><i class="fas fa-download"></i> Download Options</h4>
+                <p>Select preferred format and quality:</p>
+                
+                <div class="quality-options">
+                    <button class="quality-btn" data-quality="1080p">
+                        <i class="fas fa-download"></i> MP4 1080p
+                    </button>
+                    <button class="quality-btn" data-quality="720p">
+                        <i class="fas fa-download"></i> MP4 720p
+                    </button>
+                    <button class="quality-btn" data-quality="480p">
+                        <i class="fas fa-download"></i> MP4 480p
+                    </button>
+                    <button class="quality-btn" data-quality="360p">
+                        <i class="fas fa-download"></i> MP4 360p
+                    </button>
+                    <button class="quality-btn" data-quality="mp3">
+                        <i class="fas fa-music"></i> MP3 Audio
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="download-status" id="downloadStatus">
+            <h3><i class="fas fa-cloud-download-alt"></i> Downloading Video</h3>
+            <div class="status-text">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span id="statusMessage">Preparing download...</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="success-message" id="successMessage">
+                <i class="fas fa-check-circle"></i> Download completed successfully!
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Fast Download</h3>
+                <p>Download YouTube videos at high speed with our optimized servers</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-tachometer-alt"></i></div>
+                <h3>Multiple Qualities</h3>
+                <p>Choose from various video qualities from 144p to 1080p Full HD</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Safe & Secure</h3>
+                <p>No registration required. We don't store your downloaded videos</p>
+            </div>
+        </div>
+        
+        <div class="disclaimer">
+            <h4><i class="fas fa-exclamation-circle"></i> Disclaimer</h4>
+            <p>This is a frontend demonstration only. Actual YouTube video downloading requires backend services due to technical and legal considerations. Please respect copyright laws and only download videos you have rights to or for personal use where allowed by law.</p>
+        </div>
     </div>
+    
+    <footer>
+        <p>© 2023 YTDownloader | For Demonstration Purposes Only</p>
+        <p>This is a frontend prototype. Actual YouTube downloading would require backend implementation.</p>
+    </footer>
 
-    <div id="allwed" class="page hidden">
-      <h2>🌐 All Website</h2>
-      <p>Welcome to all websites section 🚀</p>
-    </div>
-
-    <div id="earn" class="page hidden">
-      <h2>💰 Earn</h2>
-      <p>Earn coins by using the website 🎯</p>
-    </div>
-
-    <div id="profile" class="page hidden">
-      <h2>👤 Profile</h2>
-      <p id="profileInfo"></p>
-      <button id="logoutBtn">🚪 Logout</button>
-    </div>
-  </div>
-
-  <script>
-    const loginPage = document.getElementById("loginPage");
-    const signupPage = document.getElementById("signupPage");
-    const homePage = document.getElementById("homePage");
-    const profileInfo = document.getElementById("profileInfo");
-
-    function showSignup() {
-      loginPage.classList.add("hidden");
-      signupPage.classList.remove("hidden");
-    }
-    function showLogin() {
-      signupPage.classList.add("hidden");
-      loginPage.classList.remove("hidden");
-    }
-
-    document.getElementById("signupBtn").onclick = () => {
-      const user = document.getElementById("signupUser").value;
-      const pass = document.getElementById("signupPass").value;
-      if (user && pass) {
-        localStorage.setItem(user, pass);
-        alert("Signup successful 🎉 Now login!");
-        showLogin();
-      } else {
-        alert("Please fill all fields!");
-      }
-    };
-
-    document.getElementById("loginBtn").onclick = () => {
-      const user = document.getElementById("loginUser").value;
-      const pass = document.getElementById("loginPass").value;
-      const stored = localStorage.getItem(user);
-      if (stored && stored === pass) {
-        localStorage.setItem("loggedInUser", user);
-        loginPage.classList.add("hidden");
-        signupPage.classList.add("hidden");
-        homePage.classList.remove("hidden");
-        profileInfo.textContent = `Welcome ${user} 🎉`;
-      } else {
-        alert("Invalid credentials ❌");
-      }
-    };
-
-    function showPage(pageId) {
-      document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-      document.getElementById(pageId).classList.remove("hidden");
-    }
-
-    document.getElementById("logoutBtn").onclick = () => {
-      localStorage.removeItem("loggedInUser");
-      homePage.classList.add("hidden");
-      loginPage.classList.remove("hidden");
-    };
-  </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlInput = document.getElementById('urlInput');
+            const pasteBtn = document.getElementById('pasteBtn');
+            const fetchBtn = document.getElementById('fetchBtn');
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const videoResult = document.getElementById('videoResult');
+            const videoThumb = document.getElementById('videoThumb');
+            const videoTitle = document.getElementById('videoTitle');
+            const videoDuration = document.getElementById('videoDuration');
+            const videoViews = document.getElementById('videoViews');
+            const videoDate = document.getElementById('videoDate');
+            const videoDesc = document.getElementById('videoDesc');
+            const qualityBtns = document.querySelectorAll('.quality-btn');
+            const downloadStatus = document.getElementById('downloadStatus');
+            const progressBar = document.getElementById('progressBar');
+            const statusMessage = document.getElementById('statusMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Paste button functionality
+            pasteBtn.addEventListener('click', async function() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    urlInput.value = text;
+                } catch (err) {
+                    alert('Unable to read clipboard. Please paste the URL manually.');
+                }
+            });
+            
+            // Fetch video button functionality
+            fetchBtn.addEventListener('click', function() {
+                const url = urlInput.value.trim();
+                if (!url) {
+                    alert('Please enter a YouTube URL');
+                    return;
+                }
+                
+                if (!isValidYouTubeUrl(url)) {
+                    alert('Please enter a valid YouTube URL');
+                    return;
+                }
+                
+                // Simulate fetching video info
+                simulateVideoFetching(url);
+            });
+            
+            // Search button functionality
+            searchBtn.addEventListener('click', function() {
+                const query = searchInput.value.trim();
+                if (!query) {
+                    alert('Please enter a search term');
+                    return;
+                }
+                
+                alert('Search functionality would be implemented with a backend service. You searched for: ' + query);
+            });
+            
+            // Quality buttons functionality
+            qualityBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const quality = this.getAttribute('data-quality');
+                    
+                    // Hide video result and show download status
+                    videoResult.style.display = 'none';
+                    downloadStatus.style.display = 'block';
+                    
+                    // Start download simulation
+                    simulateDownload(quality);
+                });
+            });
+            
+            // Validate YouTube URL
+            function isValidYouTubeUrl(url) {
+                const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
+                return pattern.test(url);
+            }
+            
+            // Simulate video information fetching
+            function simulateVideoFetching(url) {
+                // Show loading state
+                fetchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fetching...';
+                fetchBtn.disabled = true;
+                
+                // Simulate network request delay
+                setTimeout(() => {
+                    // Extract video ID from URL (simulated)
+                    const videoId = extractVideoId(url) || 'dQw4w9WgXcQ';
+                    
+                    // Update video details
+                    videoThumb.src = `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg`;
+                    videoTitle.textContent = getRandomTitle();
+                    videoDuration.innerHTML = '<i class="fas fa-clock"></i> ' + getRandomDuration();
+                    videoViews.innerHTML = '<i class="fas fa-eye"></i> ' + getRandomViews();
+                    videoDate.innerHTML = '<i class="fas fa-calendar"></i> ' + getRandomDate();
+                    videoDesc.textContent = 'This is a sample description of a YouTube video. In a real application, this would be fetched from the YouTube API.';
+                    
+                    // Show video result
+                    videoResult.style.display = 'block';
+                    
+                    // Reset button state
+                    fetchBtn.innerHTML = '<i class="fas fa-bolt"></i> Fetch Video';
+                    fetchBtn.disabled = false;
+                    
+                    // Scroll to results
+                    videoResult.scrollIntoView({ behavior: 'smooth' });
+                }, 2000);
+            }
+            
+            // Simulate download process
+            function simulateDownload(quality) {
+                let progress = 0;
+                
+                // Update status message based on quality
+                statusMessage.textContent = `Preparing ${quality} download...`;
+                
+                const interval = setInterval(() => {
+                    progress += 2;
+                    
+                    if (progress <= 30) {
+                        statusMessage.textContent = `Initializing ${quality} download...`;
+                    } else if (progress <= 70) {
+                        statusMessage.textContent = `Downloading ${quality} video...`;
+                    } else if (progress < 100) {
+                        statusMessage.textContent = `Finalizing ${quality} download...`;
+                    }
+                    
+                    progressBar.style.width = progress + '%';
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        statusMessage.style.display = 'none';
+                        successMessage.style.display = 'block';
+                        
+                        // After completion, reset after a delay
+                        setTimeout(() => {
+                            downloadStatus.style.display = 'none';
+                            videoResult.style.display = 'block';
+                            progressBar.style.width = '0%';
+                            statusMessage.style.display = 'flex';
+                            successMessage.style.display = 'none';
+                            statusMessage.textContent = 'Preparing download...';
+                        }, 3000);
+                    }
+                }, 50);
+            }
+            
+            // Helper function to extract video ID (simulated)
+            function extractVideoId(url) {
+                const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+                const match = url.match(regExp);
+                return (match && match[7].length === 11) ? match[7] : null;
+            }
+            
+            // Helper functions for random video data
+            function getRandomTitle() {
+                const titles = [
+                    "How to Download YouTube Videos Safely",
+                    "The Future of Online Video Content",
+                    "Top 10 Programming Tutorials for Beginners",
+                    "Understanding Web Development Concepts",
+                    "Music Video by Popular Artist"
+                ];
+                return titles[Math.floor(Math.random() * titles.length)];
+            }
+            
+            function getRandomDuration() {
+                const minutes = Math.floor(Math.random() * 20) + 5;
+                const seconds = Math.floor(Math.random() * 60);
+                return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+            }
+            
+            function getRandomViews() {
+                const views = (Math.floor(Math.random() * 10) + 1) * 100000;
+                return views.toLocaleString() + ' views';
+            }
+            
+            function getRandomDate() {
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const month = months[Math.floor(Math.random() * 12)];
+                const day = Math.floor(Math.random() * 28) + 1;
+                const year = 2020 + Math.floor(Math.random() * 4);
+                return `${month} ${day}, ${year}`;
+            }
+        });
+    </script>
 </body>
-</html>
-
+  </html>
